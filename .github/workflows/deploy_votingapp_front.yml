@@ -1,21 +1,23 @@
-name: Trigger auto deployment for voting app frontend
+name: Trigger auto deployment for aca-svls-demo-fc
 
 # When this action will be executed
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ main ]
+    branches: [main]
     paths:
-    - 'src/aca/azure-vote/**'
-    - '.github/workflows/deploy_votingapp_front.yml'
+      - "src/aca/azure-vote/**"
+      - ".github/workflows/deploy_votingapp_front.yml"
 
-  # Allow manual trigger 
+  # Allow manual trigger
   workflow_dispatch:
-      
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
 
     steps:
       - name: Checkout to the branch
@@ -24,19 +26,18 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.ACALABWEHOLMS790201_AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.ACASVLSDEMOFC_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.ACASVLSDEMOFC_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.ACASVLSDEMOFC_AZURE_SUBSCRIPTION_ID }}
 
       - name: Build and push container image to registry
-        uses: azure/container-apps-deploy-action@v1
+        uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}/azure-vote 
+          appSourcePath: ${{ github.workspace }}src/aca/azure-vote
+          _dockerfilePathKey_: Dockerfile
           registryUrl: acrjskubeeducwe.azurecr.io
-          registryUsername: ${{ secrets.ACALABWEHOLMS790201_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.ACALABWEHOLMS790201_REGISTRY_PASSWORD }}
-          containerAppName: aca-lab-we-hol-ms-7902-01
-          resourceGroup: rg-lab-we-hol-ms-7902-01
-          imageToBuild: acrjskubeeducwe.azurecr.io/aca-lab-we-hol-ms-7902-01:${{ github.sha }}
-          dockerfilePath: Dockerfile
-
-     
-
+          registryUsername: ${{ secrets.ACASVLSDEMOFC_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.ACASVLSDEMOFC_REGISTRY_PASSWORD }}
+          containerAppName: aca-svls-demo-fc
+          resourceGroup: rg-svls-demo-fc
+          imageToBuild: acrjskubeeducwe.azurecr.io/aca-svls-demo-fc:${{ github.sha }}
