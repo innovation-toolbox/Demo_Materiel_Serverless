@@ -1,0 +1,42 @@
+name: Trigger auto deployment for voting app frontend
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - 'src/aca/azure-vote/**'
+    - '.github/workflows/deploy_votingapp_front.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.ACALABWEHOLMS790201_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}/azure-vote 
+          registryUrl: acrjskubeeducwe.azurecr.io
+          registryUsername: ${{ secrets.ACALABWEHOLMS790201_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.ACALABWEHOLMS790201_REGISTRY_PASSWORD }}
+          containerAppName: aca-lab-we-hol-ms-7902-01
+          resourceGroup: rg-lab-we-hol-ms-7902-01
+          imageToBuild: acrjskubeeducwe.azurecr.io/aca-lab-we-hol-ms-7902-01:${{ github.sha }}
+          dockerfilePath: Dockerfile
+
+     
+

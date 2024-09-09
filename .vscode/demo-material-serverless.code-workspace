@@ -1,0 +1,23 @@
+{
+    "folders": [
+      {
+        "path": ".."
+      },
+      {
+        "path": "../src/functions/dotnet",
+        "name": "Az Func - Dotnet"
+      },      
+      {
+        "path": "../src/functions/python",
+        "name": "Az Func - Python"
+      },
+      {
+        "path": "../src/aca",
+        "name": "Az Container Apps"
+      }
+    ],
+    "settings": {
+      "debug.internalConsoleOptions": "neverOpen",
+      "azurite.location": "/tmp"
+    }
+  }
