@@ -33,7 +33,7 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}src/aca/azure-vote
+          appSourcePath: ${{ github.workspace }}/src/aca/azure-vote
           dockerfilePath: Dockerfile
           registryUrl: acrjskubeeducwe.azurecr.io
           registryUsername: ${{ secrets.ACASVLSDEMOFC_REGISTRY_USERNAME }}
