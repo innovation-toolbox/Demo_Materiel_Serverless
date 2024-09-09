@@ -8,6 +8,11 @@ namespace dotnet
     public class OnCreate
     {
         private readonly ILogger _logger;
+        private const string _LOG_FORMAT = 
+        """
+        Number of documents modified: {0}
+        - {1}
+        """;
 
         public OnCreate(ILoggerFactory loggerFactory)
         {
@@ -16,16 +21,19 @@ namespace dotnet
 
         [Function("OnCreate")]
         public void Run([CosmosDBTrigger(
-            databaseName: "databaseName",
-            containerName: "containerName",
-            Connection = "",
-            LeaseContainerName = "leases",
+            databaseName: "%COSMOSDB_DATABASENAME%",
+            containerName: "%COSMOSDB_CONTAINERNAME%",
+            Connection = "COSMOSDB_CONNECTIONSTRING",
+            LeaseContainerName = "%COSMOSDB_LEASECONTAINERNAME%",
             CreateLeaseContainerIfNotExists = true)] IReadOnlyList<MyDocument> input)
         {
             if (input != null && input.Count > 0)
             {
-                _logger.LogInformation("Documents modified: " + input.Count);
-                _logger.LogInformation("First document Id: " + input[0].id);
+                _logger.LogInformation(
+                    string.Format(_LOG_FORMAT, 
+                        input.Count, 
+                        string.Join("\n- ", input.Select(doc => doc.id))
+                    ));
             }
         }
     }
@@ -33,11 +41,5 @@ namespace dotnet
     public class MyDocument
     {
         public string id { get; set; }
-
-        public string Text { get; set; }
-
-        public int Number { get; set; }
-
-        public bool Boolean { get; set; }
     }
 }

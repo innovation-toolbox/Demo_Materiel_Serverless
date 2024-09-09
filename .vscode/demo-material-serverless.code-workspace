@@ -12,14 +12,6 @@
         "name": "Az Func - Python"
       },
       {
-        "path": "../src/functions/python2",
-        "name": "Az Func - Python 2"
-      },
-      {
-        "path": "../src/functions/python3",
-        "name": "Az Func - Python 3"
-      },
-      {
         "path": "../src/aca",
         "name": "Az Container Apps"
       }
